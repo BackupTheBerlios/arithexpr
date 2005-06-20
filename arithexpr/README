@@ -1,0 +1,64 @@
+/*******************************************************************\
+|                        arithExpr Parser                           |
+\*******************************************************************/
+
+Sinn und Zweck
+==============
+Der Parser dient dazu einfach arithmetische Ausdrücke wie
+"3+4^3*23+3*(2*sin(3))/ln(3)" auszurechnen. Er unterstützt bis jetzt
+
++, -, *, /, ^ (hoch), =, <=, >=, != (ungleich), sin, cos, tan, asin
+(umkehrfunktion von sin), acos, atan, ln
+
+Hinweis: sollte jemand noch mehr mathematische Funktionen oder
+Operatoren kennen, die noch nicht enthalten sind, schreibt mir bitte
+eine eMail (cypher@user.berlios.de). Danke :-)
+
+Benutzung
+=========
+Die Benutung der Klasse ist sehr einfach. Man inkludiert die Datei
+arithexpr.hpp, dann kann man ein Objekt vom Typ arithExpr anlegen.
+Dessen Konstruktor muss ein String übergeben werden, der einen
+*gültigen* Ausdruck enthält (der Syntax wird zwar geprüft, aber
+noch nicht ausreichend).
+Die Datei main.cpp enthält ein Beispiel zur Benutzung.
+Wichtig: dem Linker muss der Parameter -lm übergeben werden (zumindest
+beim gcc/g++ ist das so), da die math-Bibliotek verwendet wird.
+
+Dokumentation
+=============
+Aus den Quellcodedateien kann mit Doxygen eine Dokumentation
+erstellt werden. Wie das geht ist auf der Doxygen-Website [2]
+beschrieben.
+
+Copyright
+=========
+This c++-class provides an easy to use parser for arithmetic
+expressions.
+Copyright (C) 2005 Bodo "cypher" Akdeniz
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+02110-1301, USA.
+
+
+
+viel Spass mit dem Code. Verbesserungsvorschläge, Lobungen,
+Kritik, Spenden ausreichenden Ausmaßes, etc. sind jederzeit
+willkommen. Bitte wenden sie sich an cypher@user.berlios.de  ;-)
+
+mehr Informationen gibts auf der Projektseite bei BerliOS [1].
+
+[1] http://developer.berlios.de/projects/arithexpr/
+[2] http://www.stack.nl/~dimitri/doxygen/
