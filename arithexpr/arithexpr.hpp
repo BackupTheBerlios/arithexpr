@@ -29,6 +29,8 @@
 #include <vector>
 #include <cmath>
 
+#include "functions.hpp"
+
 using namespace std;
 
 #define ERROR_SYNTAX           "1   Syntax Error"
@@ -40,23 +42,6 @@ using namespace std;
 #define ERROR_COMPLEXNUMBER    "7   The operation would result in a complex number"
 #define ERROR_UNKNOWNFUNCTION  "8   Unknown function"
 #define ERROR_UNKNOWNVARIABLE  "9   Unknown variable"
-
-/**
- * Die Struktur wird verwendet um benutzerdefinierte
- * Funktionen zu speichern.
- */
-class function {
-public:
-	/** Der Funktionsname */
-	string name;
-	/** Parameter die der Funktion übergeben werden können.
-	 * Sie müssen dann auch in term vorkommen (oder es wäre auf
-	 * jeden Fall sinnvoll ;-))
-	 */
-	vector<string> parameter;
-	/** Der Funktionsterm */
-	string term;
-};
 
 /**
  * Diese Struktur wird verwendet um Variablen/Konstanten
@@ -102,6 +87,31 @@ class arithExpr {
          */
         string lastError();
 
+	/**
+	 * \brief Mit dieser Funktion kann man neue Funktionen
+	 * registrieren, die dann in Ausdrücken verwendet werden können.
+	 * \param name ist der Name der Funktion
+	 * \param parameter ist eine Liste von variablen, die in \p
+	 * term vorkommen, und von denen die Funktion abhängig ist (Konstanten
+	 * die mit addVariable() hinzugefügt wurden, können aber in Funktionen
+	 * auch verwendet werden).
+	 * \param term ist der Funktionsterm. In ihm sollten u.a. die mit
+	 * \p parameter übergebenen Parameter vorkommen ;-)
+	 * \param make_readonly und
+	 * \param overwrite entspricht addVariable()
+	 * \sa addVariable(), function
+	 */
+	bool addFunction(string name, vector<string> parameter, string  term, bool make_readonly=false, bool overwrite=true);
+
+	/**
+	 * \brief Die Funktion gibt die ID einer Funktion mit dem Namen
+	 * \p namen, in \p functions zurück.
+	 * \param name ist der Name der zu suchenden Funktion
+	 * \return Zurückgegeben wird die ID der Funktion in \p functions
+	 * oder -1 wenn sie nicht gefunden wurde.
+	 */
+	int getFunctionId(string name);
+	
 	/**
 	 * \brief Mit der Funktion kann eine neue Variable definiert
 	 * werden.

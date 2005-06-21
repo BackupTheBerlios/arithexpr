@@ -1,5 +1,6 @@
 #include <cstdlib>
 #include <iostream>
+#include <vector>
 
 /* Inkludieren, der arithExpr Headerdatei */
 #include "arithexpr.hpp"
@@ -24,6 +25,12 @@ int main(int argc, char *argv[])
      * dann in Berechnungen verwendet werden kann.
      */
     ae->addVariable("e", "2.71828183", true);
+
+    /* Nun fügen wir dem Objekt noch eine Funktion hinzu
+     */
+    vector<string> params;
+    params.push_back("x");
+    ae->addFunction("f", params, "x^2");
     
     /* expr ist die Eigendschaft von arithExpr, die den
      * (unter Umständen) leicht veränderteten Audruck enthält.

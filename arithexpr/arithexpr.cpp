@@ -288,6 +288,18 @@ double arithExpr::calculate() {
 		    return parameter[1]->calculate();
 	    else  return parameter[2]->calculate();
 	}
+
+	/* auf benutzerdefinierte Funktion prüfen */
+	int id;
+	if ((id=getFunctionId(funcName)) != -1)
+	{
+		vector<string> params;
+		for (int i=0; i<parameter.size(); i++) {
+			params.push_back(parameter[i]->expr);
+		}
+		arithExpr *e = new arithExpr(functions[id].getReplaced(params));
+		return e->calculate();
+	}
 	
 	error = ERROR_UNKNOWNFUNCTION;
 	return 0;
@@ -305,6 +317,41 @@ double arithExpr::calculate() {
     
     error = ERROR_UNKNOWNVARIABLE;
     return 0;
+}
+
+int arithExpr::getFunctionId(string name) {
+	for (int i=0; i<functions.size(); i++) {
+		if (functions[i].name == name)
+			return i;
+	}
+	return -1;
+}
+
+bool arithExpr::addFunction(string name, vector<string> parameter, string  term, bool make_readonly, bool overwrite) {
+	int id = getFunctionId(name);
+
+	if (!overwrite && (id > 0))
+		return false;
+	
+	if (id == -1) {
+		function newfunc;
+		newfunc.name = name;
+		newfunc.term = term;
+		newfunc.readonly = make_readonly;
+		newfunc.parameter = parameter;
+		
+		functions.push_back(newfunc);
+		return true;
+	}
+	
+	if (functions[id].readonly)
+		return false;
+	
+	functions[id].term = term;
+	functions[id].readonly = make_readonly;
+	functions[id].parameter = parameter;
+	return true;
+
 }
 
 int arithExpr::getVariableId(string name) {
