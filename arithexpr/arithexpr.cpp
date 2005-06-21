@@ -24,9 +24,11 @@
 
 #include "arithexpr.hpp"
 
-arithExpr::arithExpr(string e) {
+arithExpr::arithExpr(string e, vector<variable> *newvars) {
     expr = e;
     error = "";
+    if (newvars != NULL)
+	    variables = *newvars;
     /** \TODO Execute needed functions in the right order */
     expandExpression();
     if (validateExpression()) {
@@ -127,8 +129,8 @@ double arithExpr::calculate() {
     ops.push_back("^");
     if ((pos = findFirstOf(tmp, ops, &op)) != string::npos)
     {
-        param1 = new arithExpr(expr.substr(0, pos));
-        param2 = new arithExpr(expr.substr(pos+1));
+        param1 = new arithExpr(expr.substr(0, pos), &variables);
+        param2 = new arithExpr(expr.substr(pos+1), &variables);
         if (op ==  IdOf(ops, "+"))
             return (param1->calculate() + param2->calculate());
         if (op == IdOf(ops, "-"))
@@ -187,7 +189,7 @@ double arithExpr::calculate() {
         // Parameter zur weiterverarbeitung initialisieren
         vector<arithExpr *> parameter(params.size());
         for (int i=0; i<parameter.size(); i++) {
-            parameter[i] = new arithExpr(params[i]);
+            parameter[i] = new arithExpr(params[i], &variables);
         }
         
         if (funcName == "sin") {
@@ -266,8 +268,63 @@ double arithExpr::calculate() {
             }
             return log(x);
         }
+	
+	error = ERROR_UNKNOWNFUNCTION;
+	return 0;
     }
-    return atof(expr.c_str());
+
+    /* Wenn der Ausdruck eine Zahl ist gib sie zurück */
+    if (isNumber(expr))
+	    return atof(expr.c_str());
+   
+    int id;
+    if ((id=getVariableId(expr)) != -1) {
+        if (isNumber(variables[id].value))
+            return atof(variables[id].value.c_str());
+    }
+    
+    error = ERROR_UNKNOWNVARIABLE;
+    return 0;
+}
+
+int arithExpr::getVariableId(string name) {
+	for (int i=0; i<variables.size();i++) {
+		if (variables[i].name == name)
+			return i;
+	}
+	return -1;
+}
+
+bool arithExpr::addVariable(string name, string value, bool make_readonly, bool overwrite) {
+	int id = getVariableId(name);
+
+	if (!overwrite && (id > 0))
+		return false;
+	
+	if (id == -1) {
+		variable newvar;
+		newvar.name = name;
+		newvar.value = value;
+		newvar.readonly = make_readonly;
+		
+		variables.push_back(newvar);
+		return true;
+	}
+	
+	if (variables[id].readonly)
+		return 0;
+	
+	variables[id].value = value;
+	variables[id].readonly = make_readonly;
+	return true;
+}
+
+bool arithExpr::isNumber(string str) {
+	for (int i=0; i<str.size(); i++) {
+		if (!isdigit(str[i]) && (str[i] != '.'))
+			return false;
+	}
+	return true;
 }
 
 string arithExpr::replaceBrackets(string e) {

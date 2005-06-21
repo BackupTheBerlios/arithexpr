@@ -38,6 +38,39 @@ using namespace std;
 #define ERROR_PARAMISZERO      "5   Parameter is zero, and shouldn't be"
 #define ERROR_PARAMNEGATIVE    "6   Parameter is negative"
 #define ERROR_COMPLEXNUMBER    "7   The operation would result in a complex number"
+#define ERROR_UNKNOWNFUNCTION  "8   Unknown function"
+#define ERROR_UNKNOWNVARIABLE  "9   Unknown variable"
+
+/**
+ * Die Struktur wird verwendet um benutzerdefinierte
+ * Funktionen zu speichern.
+ */
+class function {
+public:
+	/** Der Funktionsname */
+	string name;
+	/** Parameter die der Funktion übergeben werden können.
+	 * Sie müssen dann auch in term vorkommen (oder es wäre auf
+	 * jeden Fall sinnvoll ;-))
+	 */
+	vector<string> parameter;
+	/** Der Funktionsterm */
+	string term;
+};
+
+/**
+ * Diese Struktur wird verwendet um Variablen/Konstanten
+ * zu speichern
+ */
+class variable {
+public:
+	/** Der Variablenname */
+	string name;
+	/** Der Wert der Variablen */
+	string value;
+	/** Legt fest ob die Variable überschrieben/gelöscht werden darf */
+	bool readonly;
+};
 
 /**
  * \brief Klasse zum parsen arithmetischer Ausdrücke
@@ -51,13 +84,15 @@ class arithExpr {
     public:
         string expr;
         string error;
+	vector<function> functions;
+	vector<variable> variables;
         
         /** 
 	 * \brief Konstruktor
 	 * 
          * \param e ist ein arithmetischer Ausdruck in einem String
          */
-        arithExpr(string e);
+        arithExpr(string e, vector<variable> *newvars=NULL);
         
         /**
          * Gibt zurück ob und welcher Fehler während
@@ -66,6 +101,32 @@ class arithExpr {
          * Fehlerbeschreibung zurück.
          */
         string lastError();
+
+	/**
+	 * \brief Mit der Funktion kann eine neue Variable definiert
+	 * werden.
+	 *
+	 * \param name ist der Name der Variable die angelegt werden soll.
+	 * \param value ist deren Wert (ebenfalls als String!)
+	 * \param make_readonly gibt an ob die Variable nachträglich noch
+	 * verändert oder gelöscht werden kann.
+	 * \param overwrite legt fest ob, wenn schon eine Variable mit
+	 * dem Namen exisitert, diese überschrieben werden soll oder nicht.
+	 * \return Wenn die Variable erfolgreich gespeichert wurde gibt die
+	 * Funktion \p true zurück. Ansonsten false.
+	 */
+	bool addVariable(string name, string  value, bool make_readonly=false, bool overwrite=true);
+
+	/**
+	 * \brief Die Funktion gibt die ID der Variable mit dem Namen
+	 * \p name zurück.
+	 *
+	 * \param name ist der Name der Variable, dessen ID zurück gegeben
+	 * werden soll.
+	 * \return Die Funktion gibt die ID der Variablen zurück oder -1,
+	 * wenn die Variable nicht gefunden wurde.
+	 */
+	int getVariableId(string name);
         
         /**
          * Die Funktion erweitert expr um ein paar Kleinigkeiten.
@@ -115,6 +176,8 @@ class arithExpr {
           * \param str ist der zu duchsuchende String.
           * \param words ist eine Liste von Strings, nach denen
           * gesucht werden soll.
+	  * \param id ist ein Zeiger auf eine int-Variable, in der
+	  * die ID des gefundenen Strings in words gespeichert wird.
           * \return Zurückgegeben wird die Position des gefundenen
           * Wortes oder string::npos wenn nichts gefunden wird.
           */
@@ -129,6 +192,15 @@ class arithExpr {
           * gefunden wurde.
           */
          int IdOf(vector<string> words, string item);
+
+	 /**
+	  * \brief Die Funktion prüft ob der übergebene String eine Zahl ist.
+	  *
+	  * \param str ist der zu prüfende String
+	  * \return Wenn der str eine Zahl enthält wird \p true ansonsten
+	  * \p false zurückgegben.
+	  */
+	 bool isNumber(string str);
          
 };
 

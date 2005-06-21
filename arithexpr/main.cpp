@@ -19,6 +19,11 @@ int main(int argc, char *argv[])
      * Diesem wird der arithmetische Ausdruck als String übergeben.
      */
     ae = new arithExpr(e);
+
+    /* Fügt dem Objekt eine neue Variable hinzu, die
+     * dann in Berechnungen verwendet werden kann.
+     */
+    ae->addVariable("e", "2.71828183", true);
     
     /* expr ist die Eigendschaft von arithExpr, die den
      * (unter Umständen) leicht veränderteten Audruck enthält.
