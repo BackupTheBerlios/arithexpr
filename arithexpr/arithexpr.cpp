@@ -268,6 +268,26 @@ double arithExpr::calculate() {
             }
             return log(x);
         }
+	if (funcName == "abs") {
+            if (parameter.size() != 1) {
+                error = ERROR_WRONGPARAMCOUNT;
+                return 0;
+            }
+	    double x = parameter[0]->calculate();
+	    if (x >= 0)
+		    return x;
+	    else
+		    return -x;
+	}
+	if (funcName == "if") {
+            if (parameter.size() != 3) {
+                error = ERROR_WRONGPARAMCOUNT;
+                return 0;
+	    }
+	    if (parameter[0]->calculate() == 1)
+		    return parameter[1]->calculate();
+	    else  return parameter[2]->calculate();
+	}
 	
 	error = ERROR_UNKNOWNFUNCTION;
 	return 0;

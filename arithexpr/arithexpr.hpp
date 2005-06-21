@@ -278,6 +278,18 @@ class arithExpr {
  *  Die Umkehrfunktionen von Sinus, Cosinus und Tangens \n
  *  Beispiele: \p acos(4)
  *
+ *  - abs() \n
+ *  abs() liefert den Betrag eines Ausdrucks \n
+ *  Beispiele: \p abs(4) -> 4, \p abs(-5) -> 5
+ *
+ *  - if(bedingung,dann,sonst) \n
+ *  \p bedingung muss ein Ausdruck sein, der einen
+ *  \ref vergleichs_operatoren Vergleichsoperator enthält.
+ *  Ist der Ausdruck wahr (z.B. 2=2), dann ergibt die Operation
+ *  den Wert des Ausdrucks \p dann, wenn nicht ergibt die
+ *  den Wert von \p sonst. \n
+ *  Beispiele: \p if(3=3,4,5) -> 4, \p if(4<3,1,6) -> 6
+ *
  * \subsubsection vergleichs_operatoren Vergleichsoperatoren
  * Sie geben wenn der Vergleich wahr ist \p 1, falls er falsch ist \p 0
  * zurück. Vergleichsoperatoren gibt es folgende:
