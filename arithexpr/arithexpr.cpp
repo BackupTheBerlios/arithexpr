@@ -24,11 +24,13 @@
 
 #include "arithexpr.hpp"
 
-arithExpr::arithExpr(string e, vector<variable> *newvars) {
+arithExpr::arithExpr(string e, vector<variable> *newvars, vector<function> *newfuncs) {
     expr = e;
     error = "";
     if (newvars != NULL)
 	    variables = *newvars;
+    if (newfuncs != NULL)
+	    functions = *newfuncs;
     /** \TODO Execute needed functions in the right order */
     expandExpression();
     if (validateExpression()) {
@@ -129,8 +131,8 @@ double arithExpr::calculate() {
     ops.push_back("^");
     if ((pos = findFirstOf(tmp, ops, &op)) != string::npos)
     {
-        param1 = new arithExpr(expr.substr(0, pos), &variables);
-        param2 = new arithExpr(expr.substr(pos+1), &variables);
+        param1 = new arithExpr(expr.substr(0, pos), &variables, &functions);
+        param2 = new arithExpr(expr.substr(pos+1), &variables, &functions);
         if (op ==  IdOf(ops, "+"))
             return (param1->calculate() + param2->calculate());
         if (op == IdOf(ops, "-"))
@@ -163,13 +165,13 @@ double arithExpr::calculate() {
     }
     
     /* Funktionen */
-    if (expr.find("(", 0) != string::npos) {
+    if (expr.find(("(", 0) != string::npos) && (expr[expr.size()-1]==')')) {
         string rawparams, funcName;
         vector<string> params;
         int bracket1, bracket2;
         
         bracket1 = expr.find("(", 0);
-        bracket2=expr.find(")", 0);
+        bracket2=expr.size()-1;
         
         if (bracket1 >= bracket2) {
             error = ERROR_BRACKETORDER;
@@ -189,7 +191,7 @@ double arithExpr::calculate() {
         // Parameter zur weiterverarbeitung initialisieren
         vector<arithExpr *> parameter(params.size());
         for (int i=0; i<parameter.size(); i++) {
-            parameter[i] = new arithExpr(params[i], &variables);
+            parameter[i] = new arithExpr(params[i], &variables, &functions);
         }
         
         if (funcName == "sin") {
@@ -297,7 +299,9 @@ double arithExpr::calculate() {
 		for (int i=0; i<parameter.size(); i++) {
 			params.push_back(parameter[i]->expr);
 		}
-		arithExpr *e = new arithExpr(functions[id].getReplaced(params));
+		arithExpr *e = new arithExpr(functions[id].getReplaced(params), &variables, &functions);
+		// DEBUG
+		cout << e->expr << endl;
 		return e->calculate();
 	}
 	
@@ -352,6 +356,14 @@ bool arithExpr::addFunction(string name, vector<string> parameter, string  term,
 	functions[id].parameter = parameter;
 	return true;
 
+}
+
+bool arithExpr::defineFunctionValue(string name, string parameters, string value) {
+	int id=getFunctionId(name);
+	if ((id==-1) || functions[id].readonly)
+		return false;
+	functions[id].def_parameter = parameters;
+	functions[id].def_value = value;
 }
 
 int arithExpr::getVariableId(string name) {

@@ -26,11 +26,15 @@ int main(int argc, char *argv[])
      */
     ae->addVariable("e", "2.71828183", true);
 
-    /* Nun fügen wir dem Objekt noch eine Funktion hinzu
-     */
+    /* Nun fügen wir dem Objekt noch eine Funktion hinzu */
     vector<string> params;
     params.push_back("x");
     ae->addFunction("f", params, "x^2");
+    
+    /* und noch eine */
+    params.clear();
+    params.push_back("x");
+    ae->addFunction("g", params, "f(x-1)+5");
     
     /* expr ist die Eigendschaft von arithExpr, die den
      * (unter Umständen) leicht veränderteten Audruck enthält.

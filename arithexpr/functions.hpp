@@ -27,6 +27,7 @@
 
 #include <string>
 #include <vector>
+#include <iostream> // MUSS WIEDER RAUS!!!
 
 #define FUNC_ERROR_PARAMCOUNT "function 1   Not enough parameters"
 
@@ -60,7 +61,7 @@ public:
 	 * Wird für rekursive Funktionen benötigt.
 	 */
 	string def_parameter;
-	string def_ergebnis;
+	string def_value;
 
 	/**
 	 * \brief Die Funktion ersetzt die Variablen

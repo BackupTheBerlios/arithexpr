@@ -77,7 +77,7 @@ class arithExpr {
 	 * 
          * \param e ist ein arithmetischer Ausdruck in einem String
          */
-        arithExpr(string e, vector<variable> *newvars=NULL);
+        arithExpr(string e, vector<variable> *newvars=NULL, vector<function> *newfuncs=NULL);
         
         /**
          * Gibt zurück ob und welcher Fehler während
@@ -103,6 +103,25 @@ class arithExpr {
 	 */
 	bool addFunction(string name, vector<string> parameter, string  term, bool make_readonly=false, bool overwrite=true);
 
+	/**
+	 * \brief Mit dieser Funktion kann man einen bestimmten Funktionswert
+	 * für ein bestimmte parameter definieren.
+	 *
+	 * Zum Beispiel kann man definieren, dass f(x) für f(0)=0 sein soll.
+	 * Das braucht man bei rekursiven Funktionen, wenn zum Beispiel
+	 * f(x)=f(x-1)*3 ist.
+	 * \param name ist der Name der Funktion um die es sich handelt.
+	 * \param parameters sind die Parameter (durch Kommas getrennt und ohne
+	 * Leerzeichen) für die Funktion den Wert \p value haben soll.
+	 * \param value ist der Wert den die Funktion unter den Bedingungen
+	 * haben soll.
+	 * \return Die Funktion gibt \p true zurück wenn die Aktion erfolgreich
+	 * war, sprich die Werte gesetzt werden konnten, sonst -p false.
+	 * Das kann passieren, wenn keine Funktion mit dem Namen \p name
+	 * existiert oder sie schreibgeschützt ist (\p readonly gesetzt ist)
+	 */
+	bool defineFunctionValue(string name, string parameters, string value);
+	
 	/**
 	 * \brief Die Funktion gibt die ID einer Funktion mit dem Namen
 	 * \p namen, in \p functions zurück.
